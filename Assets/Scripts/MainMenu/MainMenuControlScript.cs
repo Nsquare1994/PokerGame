@@ -6,14 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuControlScript : MonoBehaviour
 {
- 
+    public int Money;
+
     public void changeScene(string sceneName)
-    { 
-        //PlayerPrefs.SetInt()
+    {
+        PlayerPrefs.SetInt("Money", Money);
         SceneManager.LoadScene(sceneName);      
     }
 
-    
-       
-   
+    private void Start()
+    {
+        
+    }
+
+
 }

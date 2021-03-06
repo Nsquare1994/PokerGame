@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Timers;
-using UnityEngine.Events;
 
 
 
 public class GameControl : MonoBehaviour
 {
-    public PlayerScript player;
-    public PlayerScript dealer;
-    public GameObject deck;
+    public PlayerScript Player;
+    public PlayerScript Dealer;
+    public GameObject Deck;
+    public GameObject[] PlayerCard;
+    public GameObject[] DealerCard;
 
     public Button StartButton;
     public Button AutoplayButton;
@@ -27,112 +27,110 @@ public class GameControl : MonoBehaviour
     public Text CurrentBetText;
     public Text CurrentStatusText;
 
-    public Toggle SameBet;
     bool AutoplayFlag = false;
     
-    public int bet = 0;
+    public int Bet = 0;
 
-
-    public virtual void StartGame()
-    {             
-        if (this.bet == 0)
+    public void StartGame()
+    { 
+        if (this.Bet == 0)
         {
             this.CurrentStatusText.text = "No Bet!";
             Debug.Log("No Bet!");
             return;
         }
-        if ((this.player.GetMoney() < this.bet) && AutoplayFlag)
+        if(this.Player.GetMoney() == 0)
+        {
+            this.CurrentStatusText.text = "Not enough money!";
+            Debug.Log("Not enough money!");
+            return;
+        }
+        if (this.Player.GetMoney() < this.Bet)
         {
             
             this.CurrentStatusText.text = "Not enough money!";
             Debug.Log("Not enough money!");
-            CancelInvoke("StartGame");
             return;
         }
-              
-        this.player.ResetHand();
-        this.dealer.ResetHand();
-        this.deck.GetComponent<DeckScript>().shuffle();
-        this.deck.GetComponent<DeckScript>().currentIndex = 0;
-        this.player.Startinghand();
-        this.dealer.Startinghand();
-        EndRound();
-        if (!SameBet.isOn)
-        {
-            this.bet = 0;
-            this.CurrentBetText.text = "Bet: " + this.bet.ToString();
+        this.CurrentStatusText.enabled = false;
 
-        }      
+        this.Player.ResetHand();
+        this.Dealer.ResetHand();
+
+        this.Deck.GetComponent<DeckScript>().shuffle();
+        this.Deck.GetComponent<DeckScript>().currentIndex = 0;
+        StartCoroutine(DealCardAnimation());
+        this.Player.Startinghand();
+        this.Dealer.Startinghand();
+        EndRound();
+        EndRoundAutoPlayCheck();
+
+    }
+
+    private void EndRoundAutoPlayCheck()
+    {
+        if (this.AutoplayFlag)
+            StartCoroutine(Autoplay());
+                        
     }
 
     public virtual void EndRound()
     {
-        this.bet = 0;
+                   
     }
 
-    public void Autoplay()
+    public void AutoplayClicked()
     {
         if (this.AutoplayFlag)
         {
             this.AutoplayFlag = false;
             this.AutoplayStatusText.text = "Autoplay: Off";
+            EnableButtons(true);
         }
         else
         {
             this.AutoplayFlag = true;
             this.AutoplayStatusText.text = "Autoplay: On";
+            StartGame();
+            EnableButtons(false);
+            
         }
-
-        if (this.AutoplayFlag && (this.player.GetMoney() >= this.bet) && (this.player.GetMoney()!=0) && (this.bet!=0))
-        {
-            if (this.bet == 0)
-            {
-                this.CurrentStatusText.text = "No Bet!";
-                Debug.Log("No Bet!");
-                return;
-            }
-            InvokeRepeating("StartGame", 0, 2);
-        }
-        else
-            CancelInvoke("StartGame");
     }
 
-    private void Start()
-    {
-        this.CurrentMoneyText.text = "Money: " + this.player.GetMoney().ToString();
-        this.CurrentBetText.text = "Bet: " + this.bet.ToString();
-
+     void Start()
+     {
+        
+        this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
+        this.CurrentBetText.text = "Bet: " + this.Bet.ToString();
+        
         this.StartButton.onClick.AddListener(() => StartGame());
-        this.AutoplayButton.onClick.AddListener(() => Autoplay());
-        this.Bet50Button.onClick.AddListener(() => Bet());
-        this.Bet100Button.onClick.AddListener(() => Bet());
-        this.Bet500Button.onClick.AddListener(() => Bet());
-        this.RestBetButton.onClick.AddListener(() => ResetBet());
-        this.SameBet.onValueChanged.AddListener((value) => OnSameBetChanged(value));      
+        this.AutoplayButton.onClick.AddListener(() => AutoplayClicked());
+        this.Bet50Button.onClick.AddListener(() => BetButtonPressed());
+        this.Bet100Button.onClick.AddListener(() => BetButtonPressed());
+        this.Bet500Button.onClick.AddListener(() => BetButtonPressed());
+        this.RestBetButton.onClick.AddListener(() => ResetBetPressed());
+     }
+   
+    public void ResetBetPressed()
+    {
+        this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
+        this.Bet = 0;
+        this.CurrentBetText.text = "Bet: " + this.Bet.ToString();
     }
 
-    private void OnSameBetChanged(bool value)
+    public void BetButtonPressed()
     {
-        if (value)
+        if (this.Player.GetMoney() - this.Bet <= 0)
         {
-            this.player.AdjustMoney(this.bet * -1);
-            this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + this.player.GetMoney().ToString();
+            this.CurrentStatusText.text = "Not enough money!";
+            Debug.Log("Not enough money!");
+            return;
         }
-        else
-            ResetBet();
-    }
-
-    private void ResetBet()
-    {
-        this.CurrentMoneyText.text = "Money: " + this.player.GetMoney().ToString();
-        this.bet = 0;
-        this.CurrentBetText.text = "Bet: " + this.bet.ToString();
-    }
-
-    private void Bet()
-    {
+            
         int amount = int.Parse(EventSystem.current.currentSelectedGameObject.name.ToString());
-        if (amount > this.player.GetMoney())
+        Debug.Log(amount);
+        Debug.Log(this.Player.GetMoney());
+        if (amount > this.Player.GetMoney()-this.Bet)
         {
             this.CurrentStatusText.text = "Not enough money!";
             Debug.Log("Not enough money!");
@@ -140,13 +138,43 @@ public class GameControl : MonoBehaviour
         }
         else
         {
-            this.bet += amount;
-            this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + (this.player.GetMoney()-this.bet).ToString();
-            this.CurrentBetText.text = "Bet: " + this.bet.ToString();          
+            this.Bet += amount;
+            this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + (this.Player.GetMoney()-this.Bet).ToString();
+            this.CurrentBetText.text = "Bet: " + this.Bet.ToString();          
         }
 
     }
 
+    private IEnumerator DealCardAnimation()
+    {
+        GameObject.Find("HideCard").GetComponent<Renderer>().enabled = true;
+        iTween.MoveTo(this.Deck, new Vector3(0, -3, 0), 1.0f);       
+        yield return new WaitForSeconds(1);
+        this.Deck.GetComponent<Renderer>().enabled = false;
+        iTween.MoveTo(Deck, new Vector3(-3, 1, 0), 0f);
+        this.Deck.GetComponent<Renderer>().enabled = true;
+        for (int i = 0; i < PlayerCard.Length; i++)
+            PlayerCard[i].GetComponent<Renderer>().enabled = true;
+        for (int i = 0; i < DealerCard.Length; i++)
+            DealerCard[i].GetComponent<Renderer>().enabled = true;
+        GameObject.Find("HideCard").GetComponent<Renderer>().enabled = false;
+        this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
+        this.CurrentStatusText.enabled = true;
+    }
+    private IEnumerator Autoplay()
+    {   
+        yield return new WaitForSeconds(1.5f);
+        StartGame();
+    }
+
+    public void EnableButtons(bool status)
+    {
+        this.Bet50Button.interactable = status;
+        this.Bet100Button.interactable = status;
+        this.Bet500Button.interactable = status;
+        this.StartButton.interactable = status;
+        this.RestBetButton.interactable = status;
+    }
 }
   
 

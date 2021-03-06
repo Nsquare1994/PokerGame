@@ -17,7 +17,7 @@ public class DeckScript : MonoBehaviour
 
     }
 
-    public int Deal(CardScript cardScript)
+    public Tuple<int,string>  Deal(CardScript cardScript)
     {
         
 
@@ -31,8 +31,9 @@ public class DeckScript : MonoBehaviour
 
         
 
-        return cardScript.GetCardValue();
+        return Tuple.Create(cardScript.GetCardValue(), cardScript.GetCardSuit());
     }
+
 
     public Sprite TurnToCardBack()
     {
