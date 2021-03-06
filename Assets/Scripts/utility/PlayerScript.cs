@@ -26,15 +26,9 @@ public class PlayerScript : MonoBehaviour
 
     public void GetCard()
     {
-        Debug.Log(cardIndex);
-        Debug.Log(HandCard.Length);
         this.handCardValueSuits = this.deck.Deal(this.HandCard[this.cardIndex].GetComponent<CardScript>());
-        
-        Debug.Log("show card");
         this.HandCardValues.Add(handCardValueSuits.Item1);
         this.HandCardSuits.Add(handCardValueSuits.Item2);
-        //this.HandCard[cardIndex].GetComponent<Renderer>().enabled = true;
-
     }
 
     public void ResetHand()

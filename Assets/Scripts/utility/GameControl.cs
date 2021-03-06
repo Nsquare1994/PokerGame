@@ -36,27 +36,21 @@ public class GameControl : MonoBehaviour
         if (this.Bet == 0)
         {
             this.CurrentStatusText.text = "No Bet!";
-            Debug.Log("No Bet!");
             return;
         }
         if(this.Player.GetMoney() == 0)
         {
             this.CurrentStatusText.text = "Not enough money!";
-            Debug.Log("Not enough money!");
             return;
         }
         if (this.Player.GetMoney() < this.Bet)
         {
-            
             this.CurrentStatusText.text = "Not enough money!";
-            Debug.Log("Not enough money!");
             return;
         }
         this.CurrentStatusText.enabled = false;
-
         this.Player.ResetHand();
         this.Dealer.ResetHand();
-
         this.Deck.GetComponent<DeckScript>().shuffle();
         this.Deck.GetComponent<DeckScript>().currentIndex = 0;
         StartCoroutine(DealCardAnimation());
@@ -70,8 +64,7 @@ public class GameControl : MonoBehaviour
     private void EndRoundAutoPlayCheck()
     {
         if (this.AutoplayFlag)
-            StartCoroutine(Autoplay());
-                        
+            StartCoroutine(Autoplay());                      
     }
 
     public virtual void EndRound()
@@ -92,14 +85,12 @@ public class GameControl : MonoBehaviour
             this.AutoplayFlag = true;
             this.AutoplayStatusText.text = "Autoplay: On";
             StartGame();
-            EnableButtons(false);
-            
+            EnableButtons(false);         
         }
     }
 
      void Start()
-     {
-        
+     {      
         this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
         this.CurrentBetText.text = "Bet: " + this.Bet.ToString();
         
@@ -123,17 +114,12 @@ public class GameControl : MonoBehaviour
         if (this.Player.GetMoney() - this.Bet <= 0)
         {
             this.CurrentStatusText.text = "Not enough money!";
-            Debug.Log("Not enough money!");
             return;
-        }
-            
+        }           
         int amount = int.Parse(EventSystem.current.currentSelectedGameObject.name.ToString());
-        Debug.Log(amount);
-        Debug.Log(this.Player.GetMoney());
         if (amount > this.Player.GetMoney()-this.Bet)
         {
             this.CurrentStatusText.text = "Not enough money!";
-            Debug.Log("Not enough money!");
             return;
         }
         else
