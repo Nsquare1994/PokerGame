@@ -29,6 +29,7 @@ public class PlayerScript : MonoBehaviour
         this.handCardValueSuits = this.deck.Deal(this.HandCard[this.cardIndex].GetComponent<CardScript>());
         this.HandCardValues.Add(handCardValueSuits.Item1);
         this.HandCardSuits.Add(handCardValueSuits.Item2);
+        cardIndex++;
     }
 
     public void ResetHand()

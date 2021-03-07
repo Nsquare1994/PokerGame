@@ -27,11 +27,13 @@ public class GameControl : MonoBehaviour
     public Text CurrentBetText;
     public Text CurrentStatusText;
 
+    public HandRank Rank;
+
     bool AutoplayFlag = false;
     
     public int Bet = 0;
 
-    public void StartGame()
+    public virtual void StartGame()
     { 
         if (this.Bet == 0)
         {
@@ -58,7 +60,7 @@ public class GameControl : MonoBehaviour
         this.Dealer.Startinghand();
         EndRound();
         EndRoundAutoPlayCheck();
-
+       
     }
 
     private void EndRoundAutoPlayCheck()
@@ -69,7 +71,7 @@ public class GameControl : MonoBehaviour
 
     public virtual void EndRound()
     {
-                   
+        
     }
 
     public void AutoplayClicked()
@@ -100,6 +102,8 @@ public class GameControl : MonoBehaviour
         this.Bet100Button.onClick.AddListener(() => BetButtonPressed());
         this.Bet500Button.onClick.AddListener(() => BetButtonPressed());
         this.RestBetButton.onClick.AddListener(() => ResetBetPressed());
+
+        Rank = new HandRank();
      }
    
     public void ResetBetPressed()
@@ -125,7 +129,7 @@ public class GameControl : MonoBehaviour
         else
         {
             this.Bet += amount;
-            this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + (this.Player.GetMoney()-this.Bet).ToString();
+            this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
             this.CurrentBetText.text = "Bet: " + this.Bet.ToString();          
         }
 
@@ -133,18 +137,17 @@ public class GameControl : MonoBehaviour
 
     private IEnumerator DealCardAnimation()
     {
-        GameObject.Find("HideCard").GetComponent<Renderer>().enabled = true;
         iTween.MoveTo(this.Deck, new Vector3(0, -3, 0), 1.0f);       
         yield return new WaitForSeconds(1);
         this.Deck.GetComponent<Renderer>().enabled = false;
         iTween.MoveTo(Deck, new Vector3(-3, 1, 0), 0f);
         this.Deck.GetComponent<Renderer>().enabled = true;
         for (int i = 0; i < PlayerCard.Length; i++)
+        {
             PlayerCard[i].GetComponent<Renderer>().enabled = true;
-        for (int i = 0; i < DealerCard.Length; i++)
             DealerCard[i].GetComponent<Renderer>().enabled = true;
-        GameObject.Find("HideCard").GetComponent<Renderer>().enabled = false;
-        this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
+        }
+        this.CurrentMoneyText.text = this.CurrentMoneyText.text = "Money: " + this.Player.GetMoney().ToString();
         this.CurrentStatusText.enabled = true;
     }
     private IEnumerator Autoplay()

@@ -8,12 +8,6 @@ public class HighLoGameControl : GameControl
 
     public override void EndRound()
     {
-        if (this.Player.HandCardValues[0] == 1)
-            this.Player.HandCardValues[0] = 14;
-
-        if (this.Dealer.HandCardValues[0] == 1)
-            this.Dealer.HandCardValues[0] = 14;
-
         if (this.Player.HandCardValues[0] > this.Dealer.HandCardValues[0])
         {
             this.Player.AdjustMoney(this.Bet);

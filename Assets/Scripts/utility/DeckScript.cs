@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.UI;
 
 public class DeckScript : MonoBehaviour
 {
     public Sprite[] cards;
+    public Image[] cardImage;
     public List<int> CardSeq;
     public int currentIndex = 0;
     
@@ -19,8 +21,12 @@ public class DeckScript : MonoBehaviour
     public Tuple<int,string>  Deal(CardScript cardScript)
     {
         cardScript.SetCardStripe(this.cards[this.CardSeq[this.currentIndex]]);
-        cardScript.SetCardValue((this.CardSeq[this.currentIndex] % 13) + 1);
+        if(this.CardSeq[this.currentIndex] % 13 == 0)
+            cardScript.SetCardValue(14);
+        else
+            cardScript.SetCardValue((this.CardSeq[this.currentIndex] % 13) + 1);
         cardScript.SetCardSuit(this.CardSeq[this.currentIndex] / 13);
+        
         this.currentIndex++;
         return Tuple.Create(cardScript.GetCardValue(), cardScript.GetCardSuit());
     }

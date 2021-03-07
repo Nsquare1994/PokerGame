@@ -93,4 +93,9 @@ public class BlackjackGameControl : GameControl
         }
 
     }
+
+    public override void StartGame()
+    {
+        base.StartGame();
+    }
 }
