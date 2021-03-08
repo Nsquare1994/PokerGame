@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\5CardPoker\FiveCardGameControl.cs" />
     <Compile Include="Assets\Scripts\5CardPoker\FiveCardPlayer.cs" />
+    <Compile Include="Assets\Scripts\7CardPoker\SevenCardCardScript.cs" />
     <Compile Include="Assets\Scripts\7CardPoker\SevenCardGameControl.cs" />
     <Compile Include="Assets\Scripts\7CardPoker\SevenCardPlayer.cs" />
     <Compile Include="Assets\Scripts\Blackjack\BlackjackGameControl.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Assets\Scripts\utility\GameControl.cs" />
     <Compile Include="Assets\Scripts\utility\HandRank.cs" />
     <Compile Include="Assets\Scripts\utility\PlayerScript.cs" />
+    <Compile Include="Assets\Scripts\utility\StaticVar.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.18f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

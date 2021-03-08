@@ -9,14 +9,15 @@ public class HandRank : MonoBehaviour
     public string CurrentHandRankScore(List<int> values, List<string> suits)
     {
         string score;
+        for (int i = 0; i < values.Count; i++)
+            if (values[i] == 1)
+                values[i] = 14;
         values.Sort();
 
         if (IsFlush(suits))
         {
             if (IsStraight(values).Item1)
             {
-                Debug.Log("straight flush");
-                Debug.Log(IsStraight(values).Item2);
                 if(IsStraight(values).Item2)
                     return score = "9" + values[values.Count - 2].ToString();
                 else
@@ -25,10 +26,11 @@ public class HandRank : MonoBehaviour
 
             else
             {
-                Debug.Log("flush");
-                Debug.Log(values[values.Count - 1]);
                 score = "6";
                 for (int i = values.Count - 1; i >= 0; i--)
+                    if(values[i] < 10)
+                        score += "0"+ values[i].ToString();
+                else
                     score += values[i].ToString();
                 return score;
             }
@@ -37,8 +39,6 @@ public class HandRank : MonoBehaviour
         {
             if(IsStraight(values).Item1)
             {
-                Debug.Log("straight");
-                Debug.Log(values[values.Count - 1]);
                 if (IsStraight(values).Item2)
                     return score = "5" + values[values.Count - 2].ToString();
                 else
@@ -47,59 +47,66 @@ public class HandRank : MonoBehaviour
 
             else 
             {
-                if (IsFourOfAKind(values).Item1)
-                {
-                    Debug.Log("4 of a kind");
-                    Debug.Log(IsFourOfAKind(values).Item2);
-                    return score = "8" + IsFourOfAKind(values).Item2.ToString();
-                }
+                if (IsFourOfAKind(values).Item1)              
+                    return score = "8" + IsFourOfAKind(values).Item2.ToString();              
                 else
                 {
                     if (IsFullHouse(values).Item1)
-                    {
-                        Debug.Log("fullhouse");
-                        Debug.Log(IsFullHouse(values).Item2);
-                        return score = "7" + IsFullHouse(values).Item2.ToString();
-                    }
+                        return score = "7" + IsFullHouse(values).Item2.ToString();                  
                     else
                     {
-                        if (IsThreeOfAKind(values).Item1)
-                        {
-                            Debug.Log("3 of a kind");
-                            Debug.Log(IsThreeOfAKind(values).Item2);
-                            return score = "4" + IsThreeOfAKind(values).Item2.ToString();
-                        }
+                        if (IsThreeOfAKind(values).Item1)                           
+                            return score = "4" + IsThreeOfAKind(values).Item2.ToString();                       
                         else if (IsTwoPair(values).Item1)
                         {
-                            Debug.Log("2pair");
-                            Debug.Log(IsTwoPair(values).Item2);
-                            Debug.Log(IsTwoPair(values).Item3);
-                            Debug.Log(IsTwoPair(values).Item4);
-                            return score = "3" + IsTwoPair(values).Item2.ToString()
-                                               + IsTwoPair(values).Item3.ToString()
-                                               + IsTwoPair(values).Item4.ToString();
+                            if (IsTwoPair(values).Item2 < 10)
+                                score = "30" + IsTwoPair(values).Item2.ToString();
+                            else
+                                score = "3" + IsTwoPair(values).Item2.ToString();
+                            if (IsTwoPair(values).Item3 < 10)
+                                score += "0" + IsTwoPair(values).Item3.ToString();
+                            else
+                                score += IsTwoPair(values).Item3.ToString();
+                            if (IsTwoPair(values).Item4 < 10)
+                                score += "0" + IsTwoPair(values).Item4.ToString();
+                            else
+                                score += IsTwoPair(values).Item4.ToString();
+
+                            return score;
                         }
+                            
+                        
                         else
                         {
                             if (IsPair(values).Item1)
                             {
-                                Debug.Log("pair");
-                                Debug.Log(IsPair(values).Item2);
-                                Debug.Log(IsPair(values).Item3);
-                                Debug.Log(IsPair(values).Item4);
-                                Debug.Log(IsPair(values).Item5);
-                                return score = "2" + IsPair(values).Item2.ToString()
-                                                   + IsPair(values).Item3.ToString()
-                                                   + IsPair(values).Item4.ToString()
-                                                   + IsPair(values).Item5.ToString();
+                                if (IsTwoPair(values).Item2 < 10)
+                                    score = "20" + IsPair(values).Item2.ToString();
+                                else
+                                    score = "2" + IsPair(values).Item2.ToString();
+                                if (IsPair(values).Item3 < 10)
+                                    score += "0" + IsPair(values).Item3.ToString();
+                                else
+                                    score += IsPair(values).Item3.ToString();
+                                if (IsPair(values).Item4 < 10)
+                                    score += "0" + IsPair(values).Item4.ToString();
+                                else
+                                    score += IsPair(values).Item4.ToString();
+                                if (IsPair(values).Item5 < 10)
+                                    score += "0" + IsPair(values).Item5.ToString();
+                                else
+                                    score += IsPair(values).Item5.ToString();
+
+                                return score;
                             }
                             else
-                            {
-                                Debug.Log("highcard");
-                                Debug.Log(values[values.Count - 1]);
+                            {                                
                                 score = "1";
                                 for (int i = values.Count - 1; i >= 0; i--)
-                                    score += values[i].ToString();
+                                    if (values[i] < 10)
+                                        score += "0" + values[i].ToString();
+                                    else
+                                        score += values[i].ToString();
                                 return score;
                             }
                         }
@@ -135,8 +142,7 @@ public class HandRank : MonoBehaviour
             return -32767;
     }
     private Tuple<bool, int> IsFourOfAKind(List<int> values)
-    {
-        values.Sort();
+    {      
         if (values[0] == values[1] && values[1] == values[2] && values[2] == values[3])
             return Tuple.Create(true, values[0]);
         else if (values[1] == values[2] && values[2] == values[3] && values[3] == values[4])
@@ -181,8 +187,7 @@ public class HandRank : MonoBehaviour
             return Tuple.Create(false, 0);
     }
     private Tuple<bool, int, int, int> IsTwoPair(List<int> values)
-    {
-        values.Sort();
+    {      
         if (values[0] == values[1] && values[2] == values[3])
             return Tuple.Create(true, values[2], values[0], values[4]);
         else if (values[1] == values[2] && values[3] == values[4])

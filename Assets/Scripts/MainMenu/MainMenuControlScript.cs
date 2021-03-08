@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class MainMenuControlScript : MonoBehaviour
 {
-    public int Money;
-
+    public Text CurrentMoneyText;
     public void changeScene(string sceneName)
     {
-        PlayerPrefs.SetInt("Money", Money);
         SceneManager.LoadScene(sceneName);      
+    }
+
+    public void Add1000Money()
+    {
+        StaticVar.Money += 1000;
+        CurrentMoneyText.text = "Money: " + StaticVar.Money;
     }
 
     private void Start()
     {
-        
+        CurrentMoneyText.text = "Money: " + StaticVar.Money;
     }
-
-
 }
+
+

@@ -12,4 +12,9 @@ public class FiveCardPlayer : PlayerScript
         GetCard();     
         GetCard();     
     }
+
+    private void Start()
+    {
+        AdjustMoney(PlayerPrefs.GetInt("Money"));
+    }
 }

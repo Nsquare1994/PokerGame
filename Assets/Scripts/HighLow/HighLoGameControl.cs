@@ -8,22 +8,20 @@ public class HighLoGameControl : GameControl
 
     public override void EndRound()
     {
+        base.EndRound();
         if (this.Player.HandCardValues[0] > this.Dealer.HandCardValues[0])
         {
-            this.Player.AdjustMoney(this.Bet);
+            StaticVar.Money += this.Bet;
             this.CurrentStatusText.text = "You Win!";
-            Debug.Log("You Win!");
         }
         else if (this.Player.HandCardValues[0] == this.Dealer.HandCardValues[0])
         {        
             this.CurrentStatusText.text = "You Tie!";
-            Debug.Log("You Tie!");
         }
         else if(this.Player.HandCardValues[0] < this.Dealer.HandCardValues[0])
         {
-            this.Player.AdjustMoney(this.Bet * -1);      
+            StaticVar.Money -= this.Bet;
             this.CurrentStatusText.text = "You Lose!";
-            Debug.Log("You Lose!");
         }
     }
 }

@@ -16,15 +16,13 @@ public class DeckScript : MonoBehaviour
     {
         System.Random rnd = new System.Random();
         this.CardSeq = Enumerable.Range(0, 52).OrderBy(x => rnd.Next()).Take(52).ToList();
+        currentIndex = 0;
     }
 
     public Tuple<int,string>  Deal(CardScript cardScript)
     {
         cardScript.SetCardStripe(this.cards[this.CardSeq[this.currentIndex]]);
-        if(this.CardSeq[this.currentIndex] % 13 == 0)
-            cardScript.SetCardValue(14);
-        else
-            cardScript.SetCardValue((this.CardSeq[this.currentIndex] % 13) + 1);
+        cardScript.SetCardValue((this.CardSeq[this.currentIndex] % 13) + 1);
         cardScript.SetCardSuit(this.CardSeq[this.currentIndex] / 13);
         
         this.currentIndex++;

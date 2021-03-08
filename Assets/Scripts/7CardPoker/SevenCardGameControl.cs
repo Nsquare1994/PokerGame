@@ -1,10 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SevenCardGameControl : GameControl
 {
     public GameObject[] SelectedCards;
+    public SevenCardPlayer SevenPlayer;
+    public Button ConfirmButton;
+
+    private string PlayerScore;
 
     private List<List<int>> AllPossibleHand = new List<List<int>>
     {
@@ -49,41 +55,92 @@ public class SevenCardGameControl : GameControl
             AllPossibleScores.Add(Rank.CurrentHandRankScore(TempValues, TempSuits));
         }
         string MaxScore = AllPossibleScores[0];
-        for(int i = 0; i < 20; i++)
+        for(int i = 1; i < 21; i++)
         {
-            if (this.Rank.CompareRank(AllPossibleScores[i], AllPossibleScores[i + 1]) == 1)
+            if (this.Rank.CompareRank(MaxScore, AllPossibleScores[i]) == 1)
                 continue;
-            else if (this.Rank.CompareRank(AllPossibleScores[i], AllPossibleScores[i + 1]) == 0)
+            else if (this.Rank.CompareRank(MaxScore, AllPossibleScores[i]) == 0)
                 continue;
-            else if (this.Rank.CompareRank(AllPossibleScores[i], AllPossibleScores[i + 1]) == -1)
-                MaxScore = AllPossibleScores[i + 1];
+            else if (this.Rank.CompareRank(MaxScore, AllPossibleScores[i]) == -1)
+                MaxScore = AllPossibleScores[i];
         }
         return MaxScore;
     }
 
     public override void EndRound()
-    {
-        if(Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == 1)
+    {       
+        base.EndRound();
+        if (AutoplayFlag)
         {
-            this.Player.AdjustMoney(this.Bet);
-            this.CurrentStatusText.text = "You Win!";
-            Debug.Log("You Win!");
+            EnableButtons(false);
+            this.ConfirmButton.interactable = false;
+            if (Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == 1)
+            {
+                StaticVar.Money += this.Bet;
+                this.CurrentStatusText.text = "You Win!";
+            }
+            else if (Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == 0)
+            {
+                this.CurrentStatusText.text = "You Tie!";
+            }
+            else if (Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == -1)
+            {
+                StaticVar.Money -= this.Bet;
+                this.CurrentStatusText.text = "You Lose!";
+            }
         }
-        else if(Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == 0)
-        {
-            this.CurrentStatusText.text = "You Tie!";
-            Debug.Log("You Tie!");
+        else
+        {       
+            if (Rank.CompareRank(PlayerScore, GetAutoCompareHandScore(Dealer)) == 1)
+            {
+                StaticVar.Money += this.Bet;
+                this.CurrentStatusText.text = "You Win!";
+            }
+            else if (Rank.CompareRank(PlayerScore, GetAutoCompareHandScore(Dealer)) == 0)
+            {
+                this.CurrentStatusText.text = "You Tie!";
+            }
+            else if (Rank.CompareRank(PlayerScore, GetAutoCompareHandScore(Dealer)) == -1)
+            {
+                StaticVar.Money -= this.Bet;
+                this.CurrentStatusText.text = "You Lose!";
+            }
+            
+            EnableButtons(true);
         }
-        else if (Rank.CompareRank(GetAutoCompareHandScore(Player), GetAutoCompareHandScore(Dealer)) == -1)
-        {
-            this.Player.AdjustMoney(this.Bet * -1);
-            this.CurrentStatusText.text = "You Lose!";
-            Debug.Log("You Lose!");
-        }
+        this.CurrentMoneyText.text = "Money: " + StaticVar.Money;
+        SevenPlayer.PlayerSelectValue.Clear();
+        SevenPlayer.PlayerSelectSuit.Clear();
+        foreach (var item in SevenPlayer.HandCard)
+            item.GetComponent<SpriteRenderer>().color = Color.white;
+        this.ConfirmButton.interactable = true;
     }
 
     public override void StartGame()
     {
+        EnableButtons(false);
         base.StartGame();
+    }
+
+    private void Start()
+    {
+        this.CurrentMoneyText.text = "Money: " + StaticVar.Money;
+        ConfirmButton.onClick.AddListener(() => ConfirmButtonClicked());
+        this.StartButton.onClick.AddListener(() => StartGame());
+        this.AutoplayButton.onClick.AddListener(() => AutoplayClicked());
+        this.Bet50Button.onClick.AddListener(() => BetButtonPressed());
+        this.Bet100Button.onClick.AddListener(() => BetButtonPressed());
+        this.Bet500Button.onClick.AddListener(() => BetButtonPressed());
+        this.RestBetButton.onClick.AddListener(() => ResetBetPressed());
+        Rank = new HandRank();
+    }
+
+    private void ConfirmButtonClicked()
+    {
+        if (SevenPlayer.PlayerSelectValue.Count != 5)     
+            return;
+        
+        PlayerScore = Rank.CurrentHandRankScore(SevenPlayer.PlayerSelectValue, SevenPlayer.PlayerSelectSuit);
+        EndRound();
     }
 }

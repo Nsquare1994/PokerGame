@@ -36,11 +36,6 @@ public class CardScript : MonoBehaviour
 
     public void SetCardStripe(Sprite newSprite)
     {
-        //if (this.gameObject.transform.Find("Canvas"))
-        //{
-        //    Debug.Log("inside");
-        //    this.gameObject.transform.Find("Canvas").gameObject.transform.Find("Image").GetComponent<Image>().sprite = newSprite;
-        //}
         this.gameObject.GetComponent<SpriteRenderer>().sprite = newSprite;
     }
 

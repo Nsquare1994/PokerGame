@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0d047975a7c5c54ab1d995657940fb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Money: 0
+  CurrentMoneyText: {fileID: 5050963151592073503}
 --- !u!4 &361850579
 Transform:
   m_ObjectHideFlags: 0
@@ -932,6 +932,7 @@ MonoBehaviour:
   CurrentBetText: {fileID: 5050963151052491702}
   CurrentStatusText: {fileID: 5050963151940569837}
   Rank: {fileID: 0}
+  AutoplayFlag: 0
   Bet: 0
 --- !u!4 &1258789351
 Transform:
@@ -1174,7 +1175,7 @@ MonoBehaviour:
   cardIndex: 0
   HandCardValues: 
   HandCardSuits: []
-  money: 1000
+  money: 0
 --- !u!1 &1512093495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,6 +1187,7 @@ GameObject:
   - component: {fileID: 1512093496}
   - component: {fileID: 1512093497}
   - component: {fileID: 1512093498}
+  - component: {fileID: 1512093500}
   m_Layer: 0
   m_Name: PlayerCard1
   m_TagString: Untagged
@@ -1193,20 +1195,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1512093496
-Transform:
+--- !u!224 &1512093496
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1512093495}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.5, y: -3.5, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1472569095}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -1.5, y: -3.5}
+  m_SizeDelta: {x: 1.4, y: 1.9}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1512093497
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1269,6 +1276,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51613973c0f245a42862c0b26ce6498c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!222 &1512093500
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512093495}
+  m_CullTransparentMesh: 0
 --- !u!1 &1550178584
 GameObject:
   m_ObjectHideFlags: 0
@@ -1856,6 +1871,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 3b12e398a730726459194a7b6030121c, type: 3}
   - {fileID: 21300000, guid: b175d0f5b5b52a045b3a25a72d8af913, type: 3}
   - {fileID: 21300000, guid: 4006360993b5c704d8fb4e8a8b27df86, type: 3}
+  cardImage: []
   CardSeq: 
   currentIndex: 0
 --- !u!1 &3961700438308286022

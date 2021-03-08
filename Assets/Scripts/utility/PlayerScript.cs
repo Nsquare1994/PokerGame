@@ -8,7 +8,7 @@ public class PlayerScript : MonoBehaviour
     public DeckScript deck;
     public CardScript card;
 
-    private Tuple<int, string> handCardValueSuits;
+    public Tuple<int, string> handCardValueSuits;
 
     public GameObject[] HandCard;
 
@@ -17,22 +17,25 @@ public class PlayerScript : MonoBehaviour
     public List<int> HandCardValues;
     public List<string> HandCardSuits;
 
-    public int money = 1000;
+    public int money;
 
     public virtual void Startinghand()
     {
         GetCard();
     }
 
-    public void GetCard()
+    public virtual void GetCard()
     {
         this.handCardValueSuits = this.deck.Deal(this.HandCard[this.cardIndex].GetComponent<CardScript>());
-        this.HandCardValues.Add(handCardValueSuits.Item1);
+        if (handCardValueSuits.Item1 == 1)
+            this.HandCardValues.Add(14);
+        else
+            this.HandCardValues.Add(handCardValueSuits.Item1);
         this.HandCardSuits.Add(handCardValueSuits.Item2);
         cardIndex++;
     }
 
-    public void ResetHand()
+    public virtual void ResetHand()
     {
         for(int i=0; i< this.HandCard.Length; i++)
         {

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SevenCardPlayer : PlayerScript
 {
+    public List<int> PlayerSelectValue;
+    public List<string> PlayerSelectSuit;
     public override void Startinghand()
     {
         GetCard();
